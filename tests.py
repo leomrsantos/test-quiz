@@ -114,3 +114,28 @@ def test_remove_all_choices_clears_question_choices():
     question.remove_all_choices()
 
     assert question.choices == []
+
+
+@pytest.fixture
+def question_with_choices():
+    question = Question(title='Capital do Brasil?', points=5, max_selections=2)
+    c1 = question.add_choice('Brasília')
+    c2 = question.add_choice('Rio de Janeiro')
+    c3 = question.add_choice('São Paulo')
+    question.set_correct_choices([c1.id])
+    return question
+
+
+def test_fixture_question_has_three_choices(question_with_choices):
+    assert len(question_with_choices.choices) == 3
+
+
+def test_fixture_correct_selected_choices(question_with_choices):
+    selected_ids = [
+        question_with_choices.choices[0].id,
+        question_with_choices.choices[1].id,
+    ]
+
+    result = question_with_choices.correct_selected_choices(selected_ids)
+
+    assert result == [question_with_choices.choices[0].id]
